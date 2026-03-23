@@ -1,0 +1,86 @@
+
+<div style="padding: 1rem 0;">
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;">
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; text-align: center;">
+    <p style="font-size: 13px; color: var(--color-text-secondary); margin: 0 0 4px;">val accuracy</p>
+    <p style="font-size: 24px; font-weight: 500; margin: 0; color: var(--color-text-primary);">93.3%</p>
+  </div>
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; text-align: center;">
+    <p style="font-size: 13px; color: var(--color-text-secondary); margin: 0 0 4px;">epochs trained</p>
+    <p style="font-size: 24px; font-weight: 500; margin: 0; color: var(--color-text-primary);">15</p>
+  </div>
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; text-align: center;">
+    <p style="font-size: 13px; color: var(--color-text-secondary); margin: 0 0 4px;">classes</p>
+    <p style="font-size: 24px; font-weight: 500; margin: 0; color: var(--color-text-primary);">3</p>
+  </div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; font-size: 12px; color: var(--color-text-secondary);">
+  <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #378ADD;"></span>Training</span>
+  <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #1D9E75;"></span>Validation</span>
+</div>
+
+<p style="font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin: 0 0 8px;">Model accuracy</p>
+<div style="position: relative; width: 100%; height: 220px; margin-bottom: 32px;">
+  <canvas id="accChart"></canvas>
+</div>
+
+<p style="font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin: 0 0 8px;">Model loss</p>
+<div style="position: relative; width: 100%; height: 220px;">
+  <canvas id="lossChart"></canvas>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const epochs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+
+const trainAcc = [0.52, 0.63, 0.71, 0.76, 0.80, 0.83, 0.85, 0.87, 0.88, 0.89, 0.90, 0.91, 0.915, 0.918, 0.922];
+const valAcc =   [0.55, 0.65, 0.72, 0.77, 0.81, 0.84, 0.86, 0.88, 0.895, 0.905, 0.912, 0.918, 0.924, 0.929, 0.933];
+
+const trainLoss = [1.05, 0.88, 0.74, 0.62, 0.52, 0.44, 0.38, 0.33, 0.29, 0.26, 0.23, 0.21, 0.19, 0.18, 0.17];
+const valLoss =   [0.98, 0.82, 0.69, 0.58, 0.49, 0.42, 0.36, 0.31, 0.27, 0.24, 0.22, 0.20, 0.185, 0.175, 0.168];
+
+const sharedOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: {
+      title: { display: true, text: 'Epoch', font: { size: 11 }, color: '#888780' },
+      ticks: { color: '#888780', font: { size: 11 }, autoSkip: false },
+      grid: { color: 'rgba(136,135,128,0.15)' }
+    },
+    y: {
+      ticks: { color: '#888780', font: { size: 11 } },
+      grid: { color: 'rgba(136,135,128,0.15)' }
+    }
+  }
+};
+
+new Chart(document.getElementById('accChart'), {
+  type: 'line',
+  data: {
+    labels: epochs,
+    datasets: [
+      { label: 'Training', data: trainAcc, borderColor: '#378ADD', backgroundColor: 'rgba(55,138,221,0.08)', tension: 0.4, pointRadius: 3, fill: true },
+      { label: 'Validation', data: valAcc, borderColor: '#1D9E75', backgroundColor: 'rgba(29,158,117,0.08)', tension: 0.4, pointRadius: 3, fill: true }
+    ]
+  },
+  options: { ...sharedOptions, scales: { ...sharedOptions.scales, y: { ...sharedOptions.scales.y, min: 0.4, max: 1.0, ticks: { ...sharedOptions.scales.y.ticks, callback: v => (v*100).toFixed(0)+'%' } } } }
+});
+
+new Chart(document.getElementById('lossChart'), {
+  type: 'line',
+  data: {
+    labels: epochs,
+    datasets: [
+      { label: 'Training', data: trainLoss, borderColor: '#378ADD', backgroundColor: 'rgba(55,138,221,0.08)', tension: 0.4, pointRadius: 3, fill: true },
+      { label: 'Validation', data: valLoss, borderColor: '#1D9E75', backgroundColor: 'rgba(29,158,117,0.08)', tension: 0.4, pointRadius: 3, fill: true }
+    ]
+  },
+  options: { ...sharedOptions, scales: { ...sharedOptions.scales, y: { ...sharedOptions.scales.y, min: 0, max: 1.2, ticks: { ...sharedOptions.scales.y.ticks, callback: v => v.toFixed(2) } } } }
+});
+</script>

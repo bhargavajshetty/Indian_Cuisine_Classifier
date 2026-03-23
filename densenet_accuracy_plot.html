@@ -1,0 +1,96 @@
+
+<div style="padding: 1rem 0;">
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; font-size: 12px; color: var(--color-text-secondary);">
+  <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #378ADD;"></span>Training accuracy</span>
+  <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #1D9E75;"></span>Validation accuracy</span>
+</div>
+
+<div style="position: relative; width: 100%; height: 300px;">
+  <canvas id="accChart"></canvas>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;">
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; text-align: center;">
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px;">final val accuracy</p>
+    <p style="font-size: 22px; font-weight: 500; margin: 0; color: var(--color-text-primary);">93.3%</p>
+  </div>
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; text-align: center;">
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px;">starting accuracy</p>
+    <p style="font-size: 22px; font-weight: 500; margin: 0; color: var(--color-text-primary);">52%</p>
+  </div>
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; text-align: center;">
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px;">total improvement</p>
+    <p style="font-size: 22px; font-weight: 500; margin: 0; color: var(--color-text-primary);">+41.3%</p>
+  </div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const epochs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+const trainAcc = [52, 63, 71, 76, 80, 83, 85, 87, 88, 89, 90, 91, 91.5, 91.8, 92.2];
+const valAcc   = [55, 65, 72, 77, 81, 84, 86, 88, 89.5, 90.5, 91.2, 91.8, 92.4, 92.9, 93.3];
+
+new Chart(document.getElementById('accChart'), {
+  type: 'line',
+  data: {
+    labels: epochs,
+    datasets: [
+      {
+        label: 'Training accuracy',
+        data: trainAcc,
+        borderColor: '#378ADD',
+        backgroundColor: 'rgba(55,138,221,0.08)',
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        fill: true,
+        borderWidth: 2
+      },
+      {
+        label: 'Validation accuracy',
+        data: valAcc,
+        borderColor: '#1D9E75',
+        backgroundColor: 'rgba(29,158,117,0.08)',
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        fill: true,
+        borderWidth: 2
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + '%'
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'Epoch', color: '#888780', font: { size: 12 } },
+        ticks: { color: '#888780', font: { size: 11 }, autoSkip: false },
+        grid: { color: 'rgba(136,135,128,0.15)' }
+      },
+      y: {
+        min: 40,
+        max: 100,
+        title: { display: true, text: 'Accuracy (%)', color: '#888780', font: { size: 12 } },
+        ticks: {
+          color: '#888780',
+          font: { size: 11 },
+          callback: v => v + '%'
+        },
+        grid: { color: 'rgba(136,135,128,0.15)' }
+      }
+    }
+  }
+});
+</script>
